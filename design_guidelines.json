@@ -1,0 +1,111 @@
+{
+  "theme_strategy": "dark_only",
+  "theme_reasoning": "A dark theme with deep obsidian and subtle gold/sand accents communicates 'Quiet Luxury', trust, and exclusivity perfectly suited for high-net-worth wealth management.",
+  "typography": {
+    "headings": {
+      "font": "Cormorant Garamond",
+      "weights": ["light", "regular", "semibold"],
+      "classes": "font-serif tracking-tight text-white",
+      "instruction": "Use for all H1, H2, and H3. Embrace the editorial feel. Never use generic sans-serif for headings."
+    },
+    "body": {
+      "font": "Manrope",
+      "weights": ["light", "regular", "medium"],
+      "classes": "font-sans tracking-wide text-white/70",
+      "instruction": "Use for all paragraphs, labels, and small text. Highly readable at smaller sizes."
+    },
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl md:text-7xl font-light",
+      "h2": "text-4xl sm:text-5xl font-regular",
+      "h3": "text-2xl sm:text-3xl font-regular",
+      "body": "text-base sm:text-lg leading-relaxed",
+      "overline": "text-xs uppercase tracking-[0.2em] font-sans font-medium text-[#D4AF37]"
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "bg-[#0A0A0A]",
+      "secondary": "bg-[#121212]",
+      "surface": "bg-[#1A1A1A]"
+    },
+    "accent": {
+      "gold": "text-[#D4AF37]",
+      "gold_bg": "bg-[#D4AF37]",
+      "sand": "text-[#E6D5B8]",
+      "sand_bg": "bg-[#E6D5B8]"
+    },
+    "text": {
+      "primary": "text-white",
+      "secondary": "text-white/70",
+      "muted": "text-white/40"
+    },
+    "borders": "border-white/10",
+    "instruction": "Do not use pure black. Use #0A0A0A. Accent with #D4AF37 (Gold) very sparingly for buttons, active states, and overlines."
+  },
+  "visual_enhancers": {
+    "surfaces": "Use 'Crystal Glass' for the sticky header: bg-[#0A0A0A]/60 backdrop-blur-2xl border-b border-white/10. For cards, use flat #121212 with a 1px border-white/10.",
+    "hover_states": "Cards should slightly lift (-translate-y-1) and their borders glow subtly (border-white/20). Links must transition opacity.",
+    "motion": "Use framer-motion for smooth, staggered fade-up reveals on scroll. No bouncy or excessive animations. Everything must feel slow, deliberate, and expensive.",
+    "noise": "Add a very subtle SVG noise overlay fixed to the viewport to kill 'digital flatness' and make it feel like premium print."
+  },
+  "layouts": {
+    "spacing": "Extremely generous. Sections should have py-24 to py-32. Elements should have gap-12 to gap-16.",
+    "hero": "Immersive dark overlay (bg-black/50) over the hero image. Left-aligned typography. H1 extremely large serif, accompanied by a refined 'Book Consultation' pill-shaped button.",
+    "about": "Asymmetrical split: Portrait image on the right (slightly offset), sophisticated typography on the left.",
+    "services": "Bento Grid Strategy. 1 tall column, 2 stacked columns. Generous padding inside cards (p-10).",
+    "booking": "Clean, distraction-free section. Left side: value proposition. Right side: Shadcn Calendar + form.",
+    "dashboard": "Minimalist sidebar + dense data grid. Use Shadcn components heavily here. Sharp edges, utilitarian but elegant."
+  },
+  "components": {
+    "buttons": "Pill-shaped (rounded-full). Primary: bg-[#D4AF37] text-black hover:bg-[#E6D5B8]. Secondary: bg-transparent border border-white/20 text-white hover:bg-white/5.",
+    "inputs": "Shadcn inputs customized: bg-transparent border-b border-white/20 rounded-none focus-visible:ring-0 focus-visible:border-[#D4AF37].",
+    "chatbot": "Floating glass orb at bottom right (bg-[#1A1A1A]/80 backdrop-blur-xl border border-white/10). Expands into a sleek chat window. No robotic emojis.",
+    "navigation": "Sticky, glassmorphism header. Minimal links. Right-aligned CTA.",
+    "footer": "Massive py-32. Must clearly display 'SEBI/AMFI Registered Mutual Fund Distributor' and 'ARN-349743'. Include contact: 9740542188 | satvikkinvestments@gmail.com."
+  },
+  "media": {
+    "image_urls": {
+      "hero_background": {
+        "url": "https://images.unsplash.com/photo-1706074740295-d7a79c079562?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBtb2Rlcm4lMjBvZmZpY2UlMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Glass walled luxury modern office. Use as hero background with heavy black/dark gradient overlay."
+      },
+      "satvik_portrait": {
+        "url": "https://images.unsplash.com/photo-1764546899196-b53061b1b609?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBJbmRpYW4lMjBidXNpbmVzcyUyMG1hbiUyMHBvcnRyYWl0JTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Professional Indian business man portrait on dark background. Use for the 'About Satvik' section."
+      },
+      "booking_background": {
+        "url": "https://images.unsplash.com/photo-1710956394109-aaa3710e3a63?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwxfHxoaWdoJTIwZW5kJTIwbHV4dXJ5JTIwaW50ZXJpb3IlMjBkZXNrJTIwZGFya3xlbnwwfHx8fDE3ODU4Mzc5NTZ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "High end luxury interior desk. Use as a subtle background behind the booking section with high opacity overlay."
+      },
+      "service_accent": {
+        "url": "https://images.unsplash.com/photo-1760784213113-e53f4b4c96c6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGdvbGQlMjBkYXJrJTIwYmFja2dyb3VuZCUyMHRleHR1cmV8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract gold dark background texture. Use inside service cards as subtle hover reveals or background accents."
+      }
+    }
+  },
+  "libraries_and_tools": {
+    "icons": "lucide-react",
+    "motion": "framer-motion",
+    "components": "shadcn/ui (customized for dark luxury)",
+    "toasts": "sonner"
+  },
+  "accessibility": {
+    "contrast": "Ensure text over images has sufficient text-shadow or a dark overlay. Accent gold must pass contrast on #0A0A0A.",
+    "focus": "focus-visible:ring-1 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
+  },
+  "testing": {
+    "attributes": "Add data-testid attributes to all interactive elements (e.g., data-testid='book-consultation-btn', data-testid='chatbot-toggle')."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "DO NOT use dark colors as gradients. Dark colors look good when used independently.",
+    "Don't make generic centered layouts. Use asymmetry and generous spacing (p-20, p-32).",
+    "You MUST NOT apply universal transition (transition: all). Use specific transitions.",
+    "You MUST NOT center align the app container (.App { text-align: center; }). Keep natural reading flow.",
+    "Always use modern button styles (pill-shaped) with hover states.",
+    "NEVER use AI assistant Emoji characters. Use elegant SVG icons.",
+    "DO NOT use a completely transparent header. Use crystal glassmorphism.",
+    "MUST display ARN-349743 and contact details prominently in the footer.",
+    "Ensure 'data-testid' is present on all functional elements."
+  ]
+}
