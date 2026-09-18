@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Sparkles } from "lucide-react";
+import { X, Send } from "lucide-react";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const GREETING = {
   role: "assistant",
   content:
-    "Good day. I'm the digital concierge of Satvik Kattimani, mutual fund distributor (ARN-349743). Ask me anything about SIPs, portfolio reviews, or mutual fund basics — or I can help you book a free consultation.",
+    "Good day. I'm the digital concierge of Satvik Capital, the financial advisory practice of Satvik Kattimani. Ask me about SIPs, portfolio reviews, direct vs regular plans — or let me help you book a free consultation.",
 };
 
 export const ChatWidget = () => {
@@ -87,21 +87,24 @@ export const ChatWidget = () => {
           data-testid="chatbot-toggle"
           onClick={openChat}
           aria-label="Open chat"
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#1A1A1A]/80 backdrop-blur-xl border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-colors duration-300 animate-pulse-gold"
+          className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-navy/90 backdrop-blur-xl border border-copper/50 flex items-center justify-center hover:bg-copper transition-colors duration-300 animate-pulse-gold p-3"
         >
-          <Sparkles size={22} />
+          <img src="/brand/logo.png" alt="" className="w-full h-full brightness-0 invert" />
         </button>
       )}
 
       {open && (
         <div
           data-testid="chatbot-window"
-          className="fixed bottom-6 right-6 z-50 w-[92vw] max-w-[400px] h-[540px] max-h-[75vh] flex flex-col bg-[#1A1A1A]/90 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
+          className="fixed bottom-6 right-6 z-50 w-[92vw] max-w-[400px] h-[540px] max-h-[75vh] flex flex-col bg-navy/95 backdrop-blur-2xl border border-copper/30 overflow-hidden shadow-[0_20px_60px_rgba(7,13,24,0.6)]"
         >
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-[#0A0A0A]/60">
-            <div>
-              <p className="font-serif text-lg text-white leading-none">Concierge</p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] mt-1.5">Satvik Kattimani · ARN-349743</p>
+          <div className="flex items-center justify-between px-5 py-4 border-b border-copper/20 bg-navy-abyss/60">
+            <div className="flex items-center gap-3">
+              <img src="/brand/logo.png" alt="" className="w-8 h-8" />
+              <div>
+                <p className="font-serif text-lg text-white leading-none">Concierge</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-copper-glow mt-1.5">Satvik Capital</p>
+              </div>
             </div>
             <button data-testid="chatbot-close-btn" onClick={() => setOpen(false)} aria-label="Close chat" className="text-white/50 hover:text-white transition-colors duration-200">
               <X size={18} />
@@ -114,7 +117,7 @@ export const ChatWidget = () => {
                 <div
                   className={`max-w-[85%] text-sm leading-relaxed px-4 py-3 rounded-2xl ${
                     m.role === "user"
-                      ? "bg-[#D4AF37] text-black rounded-br-sm"
+                      ? "bg-copper text-white rounded-br-sm"
                       : "bg-white/5 text-white/85 border border-white/10 rounded-bl-sm"
                   }`}
                 >
@@ -125,13 +128,13 @@ export const ChatWidget = () => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="px-4 py-3 border-t border-white/10 bg-[#0A0A0A]/60 flex items-center gap-3">
+          <div className="px-4 py-3 border-t border-copper/20 bg-navy-abyss/60 flex items-center gap-3">
             <input
               data-testid="chatbot-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder="Ask about SIPs, reviews, ELSS…"
+              placeholder="Ask about SIPs, plans, reviews…"
               className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
             />
             <button
@@ -139,7 +142,7 @@ export const ChatWidget = () => {
               onClick={send}
               disabled={streaming || !input.trim()}
               aria-label="Send message"
-              className="w-9 h-9 rounded-full bg-[#D4AF37] text-black flex items-center justify-center hover:bg-[#E6D5B8] transition-colors duration-200 disabled:opacity-40"
+              className="w-9 h-9 rounded-full bg-copper text-white flex items-center justify-center hover:bg-copper-glow transition-colors duration-200 disabled:opacity-40"
             >
               <Send size={15} />
             </button>

@@ -1,111 +1,193 @@
 {
-  "theme_strategy": "dark_only",
-  "theme_reasoning": "A dark theme with deep obsidian and subtle gold/sand accents communicates 'Quiet Luxury', trust, and exclusivity perfectly suited for high-net-worth wealth management.",
-  "typography": {
-    "headings": {
-      "font": "Cormorant Garamond",
-      "weights": ["light", "regular", "semibold"],
-      "classes": "font-serif tracking-tight text-white",
-      "instruction": "Use for all H1, H2, and H3. Embrace the editorial feel. Never use generic sans-serif for headings."
-    },
-    "body": {
-      "font": "Manrope",
-      "weights": ["light", "regular", "medium"],
-      "classes": "font-sans tracking-wide text-white/70",
-      "instruction": "Use for all paragraphs, labels, and small text. Highly readable at smaller sizes."
-    },
-    "hierarchy": {
-      "h1": "text-5xl sm:text-6xl md:text-7xl font-light",
-      "h2": "text-4xl sm:text-5xl font-regular",
-      "h3": "text-2xl sm:text-3xl font-regular",
-      "body": "text-base sm:text-lg leading-relaxed",
-      "overline": "text-xs uppercase tracking-[0.2em] font-sans font-medium text-[#D4AF37]"
-    }
+  "project_name": "Satvik Capital",
+  "archetype": "Heritage Luxury meets Nautical Precision (Deep Navy + Burnished Copper + Handmade Paper/Ivory)",
+  "vibe": "Human-crafted, bespoke financial advisory atelier with sacred Indian heritage & maritime navigational mastery. Replaces generic black-and-gold tech templates with organic tactile warmth, rich ink typography, and artisanal dignity.",
+  "theme_strategy": {
+    "base_theme": "Dual-Tone Heritage Architecture (Dark Deep Oceanic Navy for Hero/Intro/Footer & High-Impact Manifesto; Warm Textured Ivory/Handmade Parchment Paper for Analytical & Interactive Sections: About, Calculator, Comparison, Booking, Chapters).",
+    "rationale": "High-net-worth investors and families in India respect heritage, trust, and clarity. Complete dark feels like crypto gambling; complete flat white feels like SaaS template. The alternating parchment & midnight-navy rhythm creates a cinematic reading journey like unfolding an illuminated royal ledger."
   },
   "colors": {
-    "background": {
-      "primary": "bg-[#0A0A0A]",
-      "secondary": "bg-[#121212]",
-      "surface": "bg-[#1A1A1A]"
+    "palette": {
+      "navy_midnight": "#0B1528",
+      "navy_deep": "#0F1F38",
+      "navy_surface": "#162847",
+      "copper_burnished": "#C76A3D",
+      "copper_glow": "#DE7E4E",
+      "copper_foil": "#B35A2F",
+      "copper_tint": "#F5EBE4",
+      "copper_muted": "rgba(199, 106, 61, 0.18)",
+      "paper_parchment": "#F9F6F0",
+      "paper_ivory": "#F3EDE2",
+      "paper_warm_white": "#FFFFFF",
+      "ink_primary": "#0D1726",
+      "ink_secondary": "#415065",
+      "ink_tertiary": "#6E7E91",
+      "border_hairline": "rgba(11, 21, 40, 0.08)",
+      "border_copper": "rgba(199, 106, 61, 0.35)",
+      "border_navy_card": "rgba(255, 255, 255, 0.08)"
     },
-    "accent": {
-      "gold": "text-[#D4AF37]",
-      "gold_bg": "bg-[#D4AF37]",
-      "sand": "text-[#E6D5B8]",
-      "sand_bg": "bg-[#E6D5B8]"
+    "semantic_usage": {
+      "cta_primary": "bg-[#C76A3D] hover:bg-[#DE7E4E] text-[#FFFFFF] shadow-[0_4px_20px_rgba(199,106,61,0.28)] transition-all duration-300",
+      "cta_secondary": "border border-[#0B1528] text-[#0B1528] hover:bg-[#0B1528] hover:text-[#F9F6F0] transition-colors duration-300",
+      "cta_on_dark": "border border-[#C76A3D] text-[#DE7E4E] hover:bg-[#C76A3D] hover:text-[#FFFFFF] transition-colors duration-300",
+      "card_paper": "bg-[#FFFFFF] border border-[#0B1528]/10 shadow-[0_4px_24px_rgba(11,21,40,0.04)]",
+      "card_navy": "bg-[#0F1F38]/90 border border-[#C76A3D]/25 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.35)]",
+      "accent_pill": "bg-[#C76A3D]/10 text-[#C76A3D] border border-[#C76A3D]/30"
     },
-    "text": {
-      "primary": "text-white",
-      "secondary": "text-white/70",
-      "muted": "text-white/40"
-    },
-    "borders": "border-white/10",
-    "instruction": "Do not use pure black. Use #0A0A0A. Accent with #D4AF37 (Gold) very sparingly for buttons, active states, and overlines."
-  },
-  "visual_enhancers": {
-    "surfaces": "Use 'Crystal Glass' for the sticky header: bg-[#0A0A0A]/60 backdrop-blur-2xl border-b border-white/10. For cards, use flat #121212 with a 1px border-white/10.",
-    "hover_states": "Cards should slightly lift (-translate-y-1) and their borders glow subtly (border-white/20). Links must transition opacity.",
-    "motion": "Use framer-motion for smooth, staggered fade-up reveals on scroll. No bouncy or excessive animations. Everything must feel slow, deliberate, and expensive.",
-    "noise": "Add a very subtle SVG noise overlay fixed to the viewport to kill 'digital flatness' and make it feel like premium print."
-  },
-  "layouts": {
-    "spacing": "Extremely generous. Sections should have py-24 to py-32. Elements should have gap-12 to gap-16.",
-    "hero": "Immersive dark overlay (bg-black/50) over the hero image. Left-aligned typography. H1 extremely large serif, accompanied by a refined 'Book Consultation' pill-shaped button.",
-    "about": "Asymmetrical split: Portrait image on the right (slightly offset), sophisticated typography on the left.",
-    "services": "Bento Grid Strategy. 1 tall column, 2 stacked columns. Generous padding inside cards (p-10).",
-    "booking": "Clean, distraction-free section. Left side: value proposition. Right side: Shadcn Calendar + form.",
-    "dashboard": "Minimalist sidebar + dense data grid. Use Shadcn components heavily here. Sharp edges, utilitarian but elegant."
-  },
-  "components": {
-    "buttons": "Pill-shaped (rounded-full). Primary: bg-[#D4AF37] text-black hover:bg-[#E6D5B8]. Secondary: bg-transparent border border-white/20 text-white hover:bg-white/5.",
-    "inputs": "Shadcn inputs customized: bg-transparent border-b border-white/20 rounded-none focus-visible:ring-0 focus-visible:border-[#D4AF37].",
-    "chatbot": "Floating glass orb at bottom right (bg-[#1A1A1A]/80 backdrop-blur-xl border border-white/10). Expands into a sleek chat window. No robotic emojis.",
-    "navigation": "Sticky, glassmorphism header. Minimal links. Right-aligned CTA.",
-    "footer": "Massive py-32. Must clearly display 'SEBI/AMFI Registered Mutual Fund Distributor' and 'ARN-349743'. Include contact: 9740542188 | satvikkinvestments@gmail.com."
-  },
-  "media": {
-    "image_urls": {
-      "hero_background": {
-        "url": "https://images.unsplash.com/photo-1706074740295-d7a79c079562?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBtb2Rlcm4lMjBvZmZpY2UlMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85",
-        "description": "Glass walled luxury modern office. Use as hero background with heavy black/dark gradient overlay."
-      },
-      "satvik_portrait": {
-        "url": "https://images.unsplash.com/photo-1764546899196-b53061b1b609?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBJbmRpYW4lMjBidXNpbmVzcyUyMG1hbiUyMHBvcnRyYWl0JTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85",
-        "description": "Professional Indian business man portrait on dark background. Use for the 'About Satvik' section."
-      },
-      "booking_background": {
-        "url": "https://images.unsplash.com/photo-1710956394109-aaa3710e3a63?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwxfHxoaWdoJTIwZW5kJTIwbHV4dXJ5JTIwaW50ZXJpb3IlMjBkZXNrJTIwZGFya3xlbnwwfHx8fDE3ODU4Mzc5NTZ8MA&ixlib=rb-4.1.0&q=85",
-        "description": "High end luxury interior desk. Use as a subtle background behind the booking section with high opacity overlay."
-      },
-      "service_accent": {
-        "url": "https://images.unsplash.com/photo-1760784213113-e53f4b4c96c6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGdvbGQlMjBkYXJrJTIwYmFja2dyb3VuZCUyMHRleHR1cmV8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85",
-        "description": "Abstract gold dark background texture. Use inside service cards as subtle hover reveals or background accents."
-      }
+    "chart_colors": {
+      "sip_total_wealth": "#C76A3D",
+      "sip_invested_capital": "#0B1528",
+      "sip_direct_advantage_delta": "#1E6B52",
+      "sip_grid_lines": "#E5DCD0"
     }
   },
-  "libraries_and_tools": {
-    "icons": "lucide-react",
-    "motion": "framer-motion",
-    "components": "shadcn/ui (customized for dark luxury)",
-    "toasts": "sonner"
+  "typography": {
+    "headline_font": "'Cormorant Garamond', Georgia, serif",
+    "body_font": "'Manrope', ui-sans-serif, sans-serif",
+    "script_font": "'Cinzel Decorative', 'Cormorant Garamond', serif",
+    "mono_accent": "'IBM Plex Mono', 'Courier New', monospace",
+    "google_fonts_embed": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "hierarchy": {
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-normal font-serif tracking-tight leading-[1.08] text-[#FFFFFF]",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-normal font-serif tracking-tight leading-tight",
+      "h3_chapter": "text-xl sm:text-2xl font-medium font-serif",
+      "h4_card": "text-lg sm:text-xl font-medium font-serif",
+      "body_lead": "text-base sm:text-lg font-light font-sans leading-relaxed text-[#415065]",
+      "body_regular": "text-sm sm:text-base font-normal font-sans leading-relaxed",
+      "label_overline": "text-[11px] font-mono uppercase tracking-[0.22em] text-[#C76A3D] font-medium"
+    }
   },
-  "accessibility": {
-    "contrast": "Ensure text over images has sufficient text-shadow or a dark overlay. Accent gold must pass contrast on #0A0A0A.",
-    "focus": "focus-visible:ring-1 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
+  "paper_texture_guidance": {
+    "css_grain_overlay": "pointer-events-none fixed inset-0 z-50 opacity-[0.035] bg-[radial-gradient(#0B1528_1px,transparent_1px)] [background-size:16px_16px] mix-blend-multiply",
+    "svg_noise_embed": "data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E",
+    "deckle_edge_borders": "Use subtle 1px dashed or dotted border in copper tone rgba(199, 106, 61, 0.25) across chapter splits."
   },
-  "testing": {
-    "attributes": "Add data-testid attributes to all interactive elements (e.g., data-testid='book-consultation-btn', data-testid='chatbot-toggle')."
+  "logo_concept": {
+    "direction": "The Vedic Astrolabe & Navigational Compass Rose ('Satvik Yantra of Prosperity')",
+    "visual_motif": "An intricate geometric SVG insignia merging the 8-pointed Lakshmi star (Ashta Lakshmi - 8 dimensions of enduring wealth) with a maritime navigator's astrolabe/sextant in burnished copper wireframe, holding a steady north star at its apex. It symbolizes navigating volatile market seas with ethical, disciplined equilibrium.",
+    "wordmark": "SATVIK CAPITAL in Cormorant Garamond with wide tracking (tracking-[0.25em]), accompanied by a discreet subtitle 'WEALTH ARCHITECTURE & ADVISORY' in micro-mono uppercase."
   },
-  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
-    "You tend to converge toward generic, 'on distribution' outputs. Avoid this: make creative, distinctive frontends that surprise and delight.",
-    "DO NOT use dark colors as gradients. Dark colors look good when used independently.",
-    "Don't make generic centered layouts. Use asymmetry and generous spacing (p-20, p-32).",
-    "You MUST NOT apply universal transition (transition: all). Use specific transitions.",
-    "You MUST NOT center align the app container (.App { text-align: center; }). Keep natural reading flow.",
-    "Always use modern button styles (pill-shaped) with hover states.",
-    "NEVER use AI assistant Emoji characters. Use elegant SVG icons.",
-    "DO NOT use a completely transparent header. Use crystal glassmorphism.",
-    "MUST display ARN-349743 and contact details prominently in the footer.",
-    "Ensure 'data-testid' is present on all functional elements."
-  ]
+  "intro_script_morph_experience": {
+    "concept": "The Hindu Traditional Multilingual Invocation ('One Dharma of Wealth, Eleven Voices')",
+    "languages": [
+      { "script": "देवनागरी (Sanskrit/Hindi)", "text": "सात्विक", "lang": "Devanagari" },
+      { "script": "ಕನ್ನಡ (Kannada)", "text": "ಸಾತ್ವಿಕ್", "lang": "Kannada" },
+      { "script": "தமிழ் (Tamil)", "text": "சாத்விக்", "lang": "Tamil" },
+      { "script": "తెలుగు (Telugu)", "text": "సాత్విక్", "lang": "Telugu" },
+      { "script": "বাংলা (Bengali)", "text": "সাত্ত্বিক", "lang": "Bengali" },
+      { "script": "ગુજરાતી (Gujarati)", "text": "સાત્વિક", "lang": "Gujarati" },
+      { "script": "മലയാളം (Malayalam)", "text": "സാത്വിക്", "lang": "Malayalam" },
+      { "script": "ਪੰਜਾਬੀ (Gurmukhi)", "text": "ਸਾਤਵਿਕ", "lang": "Punjabi" },
+      { "script": "ଓଡ଼ିଆ (Odia)", "text": "ସାତ୍ତ୍ୱିକ", "lang": "Odia" },
+      { "script": "اردو (Urdu)", "text": "ساتوک", "lang": "Urdu" },
+      { "script": "English Wordmark", "text": "SATVIK CAPITAL", "lang": "Global Identity" }
+    ],
+    "animation_flow": "A sacred brass/copper circle pulses gently on a deep navy parchment canvas (#0B1528). The sacred scripts cycle rapidly yet ceremoniously with glowing copper typography (framer-motion AnimatePresence, duration 180ms each with subtle vertical drift). At the 10th transition, the copper compass logo resolves in golden-copper linework and expands into the stately wordmark 'SATVIK CAPITAL' accompanied by an auspicious Sanskrit tag line 'सत्येन धार्यते धनम्' (Wealth is preserved through discipline and truth).",
+    "interaction": "User can watch the 2.8s intro or click a tactile 'Enter Advisory / Skip' button in bottom right."
+  },
+  "layout_and_sections": [
+    {
+      "id": "header",
+      "component": "Floating Glassmorphic Header",
+      "bg": "bg-[#0B1528]/85 backdrop-blur-xl border-b border-[#C76A3D]/20 z-50",
+      "details": "Brand Logo with Astrolabe emblem, Nav links: Manifesto, Edge & AMC, Chapters, SIP Engine, Direct vs Regular, Booking, Direct Contact (+91 9740542188). CTA Button: 'Book Portfolio Audit' in burnished copper."
+    },
+    {
+      "id": "hero",
+      "component": "Kinetic Hero with Line-by-Line Masked Reveal",
+      "bg": "bg-[#0B1528] text-white",
+      "details": "Deep nautical navy background with copper navigational grid lines. Overline: 'PERSONAL FINANCIAL ADVISORY PRACTICE OF SATVIK KATTIMANI'. Masked line reveal: 'Navigating Volatile Tides. Anchoring Generational Wealth.' Two CTAs: 'Schedule 1-on-1 Portfolio Restructuring' and 'Calculate SIP Compounding'. Micro-stat ribbon: 'Bespoke Advisory · AMFI Certified Edge · Direct Line Desk'."
+    },
+    {
+      "id": "editorial_marquee",
+      "component": "Slow Living Ribbon Marquee",
+      "bg": "bg-[#0F1F38] border-y border-[#C76A3D]/25 text-[#E6D5B8]",
+      "details": "Ultra-slow drift marquee featuring curated financial adages: 'No Automated Queues · Direct Personal Access 9740542188 · Asset Management AMC Ideation Pedigree · Mutual Fund Architecture · Disciplined Asset Allocation · Fiduciary Rigor'."
+    },
+    {
+      "id": "about_edge",
+      "component": "The Founder's Edge & Academic Pedigree",
+      "bg": "bg-[#F9F6F0] text-[#0D1726]",
+      "details": "Two-column editorial layout with authentic portrait frame and wax-seal motif. Highlight: Bachelor's Degree in Investment Banking + Hands-on AMC (Asset Management Company) Internship in the ideation, stress-testing, and execution of Mutual Funds. Satvik isn't a third-party reseller; he understands fund construction from inside the AMC engine room."
+    },
+    {
+      "id": "numbered_chapters",
+      "component": "Four Manifesto Chapters of Advisory",
+      "bg": "bg-[#F3EDE2] text-[#0D1726]",
+      "details": "Chapter I: Strategic Portfolio Architecture; Chapter II: Mutual Fund Ideation & Selection (AMC Tested); Chapter III: Risk Mitigation & Tactical Rebalancing; Chapter IV: Unfettered Human Concierge (Zero Call Centers)."
+    },
+    {
+      "id": "sip_growth_engine",
+      "component": "Interactive SIP Growth & Inflation-Adjusted Calculator",
+      "bg": "bg-[#FFFFFF] border-y border-[#0B1528]/10 text-[#0D1726]",
+      "details": "Sliders for Monthly Investment (₹1,000 to ₹5,00,000), Duration (1 to 30 Years), Expected Annual Return (6% to 24%). Recharts Area & Line visualization comparing 'Invested Amount' vs 'Estimated Wealth Gain' with copper & navy fill. Direct CTA: 'Lock this Wealth Strategy with Satvik'."
+    },
+    {
+      "id": "direct_vs_regular",
+      "component": "The Honest Truth: Direct Plan vs Guided Regular Plan",
+      "bg": "bg-[#0B1528] text-[#FFFFFF]",
+      "details": "Comprehensive comparative matrix showing why the '0.5% DIY Direct' illusion fails 92% of retail investors during market drawdowns due to emotional panic selling, erratic rebalancing, and tax ignorance. Contrast: 'DIY Direct Plan: Solitary Guesswork' vs 'Satvik Guided Plan: Disciplined AMC-grade Allocation & 24/7 Behavioral Anchor'."
+    },
+    {
+      "id": "booking_section",
+      "component": "Appointment Booking Engine (Google Calendar Ready)",
+      "bg": "bg-[#F9F6F0] text-[#0D1726]",
+      "details": "Dedicated booking terminal for Free Portfolio Consultation & Restructuring. Select Date (custom styled calendar with copper active day), IST Time Slot (10:00 AM, 11:30 AM, 2:00 PM, 4:30 PM, 6:00 PM, 7:30 PM), Client Name, Phone, Email, Portfolio Size band, and specific inquiry. Instant confirmation badge + Google Calendar direct sync link."
+    },
+    {
+      "id": "direct_desk",
+      "component": "Direct Customer Service Sanctuary (No Ticketing)",
+      "bg": "bg-[#0F1F38] text-[#FFFFFF]",
+      "details": "Big bold copper callouts: 'Direct Line to Satvik: +91 9740542188', 'Direct Advisory Email: satvikkinvestments@gmail.com', 'WhatsApp Fast Desk'. No AI robot runaround, no IVR wait time."
+    },
+    {
+      "id": "testimonials",
+      "component": "Curated Patron Endorsements",
+      "bg": "bg-[#F3EDE2] text-[#0D1726]",
+      "details": "Three high-net-worth patron testimonials celebrating disciplined CAGR, crisis navigation, and the peace of mind of having Satvik's AMC-level insight."
+    },
+    {
+      "id": "footer",
+      "component": "Heritage Architectural Footer",
+      "bg": "bg-[#070D18] text-[#94A3B8]",
+      "details": "Statutory Regulatory notice placed exclusively here: 'AMFI-Registered Mutual Fund Distributor · ARN-349743'. Disclaimers on mutual fund investments. Quick access to Admin Portal login, direct contact, and copyright notice."
+    },
+    {
+      "id": "ai_concierge",
+      "component": "Floating Satvik AI Concierge",
+      "bg": "bg-[#0B1528] text-[#FFFFFF] border border-[#C76A3D]/40 shadow-2xl",
+      "details": "Floating copper compass button in bottom-right that opens an intelligent conversational assistant capable of answering questions on Satvik's background, SIP mechanics, scheduling an audit, and connecting to Satvik directly."
+    },
+    {
+      "id": "admin_dashboard",
+      "component": "Private Advisory Command Center (/admin)",
+      "bg": "bg-[#0B1528] with #0F1F38 cards and copper accents",
+      "details": "Secured passcode/login portal. Tabulated view of incoming portfolio audit bookings, lead stats, Google Calendar sync toggles, and direct communication triggers."
+    }
+  ],
+  "image_assets": {
+    "founder_portrait": "https://images.pexels.com/photos/36879437/pexels-photo-36879437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "advisory_meeting": "https://images.pexels.com/photos/8068654/pexels-photo-8068654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "heritage_door_brass": "https://images.unsplash.com/photo-1524228529766-4d7fe5dc55ca?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBoZXJpdGFnZSUyMGFyY2hpdGVjdHVyZSUyMHRleHR1cmV8ZW58MHx8fHwxNzg5NzMxNzI5fDA&ixlib=rb-4.1.0&q=85",
+    "jaipur_archway": "https://images.unsplash.com/photo-1596901224267-67ca38199090?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwyfHxpbmRpYW4lMjBoZXJpdGFnZSUyMGFyY2hpdGVjdHVyZSUyMHRleHR1cmV8ZW58MHx8fHwxNzg5NzMxNzI5fDA&ixlib=rb-4.1.0&q=85",
+    "parchment_texture": "https://images.unsplash.com/photo-1629968417850-3505f5180761?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHx2aW50YWdlJTIwcGFyY2htZW50JTIwaGFuZG1hZGUlMjBwYXBlciUyMHRleHR1cmV8ZW58MHx8fHwxNzg5NzMxNzQwfDA&ixlib=rb-4.1.0&q=85"
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the user's rejection of generic black-and-gold templates; execute the 'Deep Navy (#0B1528) + Burnished Copper (#C76A3D) + Warm Paper/Parchment (#F9F6F0)' aesthetic.",
+    "Do NOT use pure Inter or Roboto for headers. Use Cormorant Garamond for regal titles and Manrope for razor-sharp, readable body text.",
+    "Implement the full Hindu-traditional script morph sequence at the first visit with smooth AnimatePresence and a skip option. The scripts: Devanagari (सात्विक), Kannada (ಸಾತ್ವಿಕ್), Tamil (சாத்விக்), Telugu (సాత్విక్), Bengali (সাত্ত্বিক), Gujarati (સાત્વિક), Malayalam (സാത്വിക്), Punjabi (ਸਾਤਵਿਕ), Odia (ସାତ୍ତ୍ୱିକ), Urdu (ساتوک), culminating in 'SATVIK CAPITAL'.",
+    "Highlight Satvik Kattimani's authentic edge: Bachelor's in Investment Banking + Hands-on Asset Management Company (AMC) Internship in Mutual Fund Ideation & Execution.",
+    "Direct contact channels (Phone: 9740542188, Email: satvikkinvestments@gmail.com, WhatsApp) must be prominent and celebrate 'Zero ticketing queues — talk directly to the advisor'.",
+    "Regulatory line 'AMFI-Registered Mutual Fund Distributor · ARN-349743' must appear ONLY in the footer near the copyright.",
+    "All interactive elements and form inputs MUST contain 'data-testid' tags (e.g., data-testid='book-audit-button', data-testid='sip-amount-slider', data-testid='phone-contact-link', data-testid='admin-login-button').",
+    "Provide a fully functional SIP Calculator with dynamic Recharts curve and realistic calculation formula.",
+    "Deliver an articulate 'Direct vs Regular Plan' educational comparison section showing why behavioral guidance and fund rebalancing beat lone DIY execution.",
+    "Provide a sleek floating AI Concierge dialog widget and a working Admin Dashboard view with appointments management and Google Calendar mock integration status."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": {
+    "spacing": "Generous spacing philosophy (py-24, py-32 for sections, p-8 to p-12 for focal cards). Never let bordered containers touch text without padding.",
+    "no_center_syndrome": "Use asymmetric two-column layouts, editorial magazine offsets, and left-aligned structured typography.",
+    "motion": "Use framer-motion transitions with explicit ease and staggered delays. Respect prefers-reduced-motion.",
+    "contrast": "Ensure every text element has a minimum 4.5:1 contrast against its background. Invert text color explicitly on hover states."
+  }
 }

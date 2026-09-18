@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Query
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Query, BackgroundTasks
 from fastapi.responses import StreamingResponse, RedirectResponse
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -16,6 +16,12 @@ import logging
 import bcrypt
 import jwt
 import requests as http_requests
+import httpx
+import re
+import ipaddress
+from html import escape
+from html.parser import HTMLParser
+from urllib.parse import urlparse
 
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -31,6 +37,116 @@ GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "")
 GOOGLE_REDIRECT_URI = f"{FRONTEND_URL}/api/oauth/calendar/callback"
 GOOGLE_SCOPES = ["https://www.googleapis.com/auth/calendar"]
+
+EMAIL_BASE_URL = "https://integrations.emergentagent.com"
+EMAIL_KEY = os.environ["EMERGENT_EMAIL_KEY"]
+EMAIL_FROM_NAME = os.environ["EMAIL_FROM_NAME"]
+EMAIL_REPLY_TO = os.environ.get("EMAIL_REPLY_TO")
+NOTIFY_EMAIL = os.environ["NOTIFY_EMAIL"]
+
+_SHORTENERS = ("bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly", "goo.gl", "rebrand.ly")
+_CRED_ASK = ("reply with your password", "reply with the code", "send your password", "cvv",
+             "send us your password", "enter your password below", "confirm your card number",
+             "your full card number", "seed phrase", "recovery phrase", "verify your card",
+             "social security number", "confirm your bank details")
+_HOSTISH = re.compile(r"\b(?:https?://)?((?:[a-z0-9-]+\.)+[a-z]{2,})", re.I)
+
+def _host_ok(host: str) -> bool:
+    if not host or "xn--" in host:
+        return False
+    try:
+        ipaddress.ip_address(host)
+        return False
+    except ValueError:
+        pass
+    return not any(host == s or host.endswith("." + s) for s in _SHORTENERS)
+
+def _same_site(shown: str, real: str) -> bool:
+    return shown == real or real.endswith("." + shown) or shown.endswith("." + real)
+
+class _EmailScan(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.tags, self.urls, self.anchors = set(), [], []
+        self._href, self._text = None, []
+    def handle_starttag(self, tag, attrs):
+        self.tags.add(tag.lower())
+        self.urls += [v for k, v in attrs if k.lower() in ("href", "src") and v]
+        if tag.lower() == "a":
+            self._href = dict((k.lower(), v) for k, v in attrs).get("href")
+            self._text = []
+    def handle_data(self, data):
+        if self._href is not None:
+            self._text.append(data)
+    def handle_endtag(self, tag):
+        if tag.lower() == "a" and self._href is not None:
+            self.anchors.append((self._href, "".join(self._text)))
+            self._href, self._text = None, []
+
+def _assert_safe_email(subject: str, html: str) -> None:
+    scan = _EmailScan(); scan.feed(html)
+    if scan.tags & {"form", "input", "textarea", "select"}:
+        raise ValueError("No forms or input fields in email (G2)")
+    body = f"{subject}\n{html}".lower()
+    for p in _CRED_ASK:
+        if p in body:
+            raise ValueError(f"Email asks the recipient for credentials: {p!r} (G2)")
+    for url in scan.urls:
+        low = url.strip().lower()
+        if low.startswith(("mailto:", "tel:", "cid:", "#")):
+            continue
+        if not low.startswith("https://"):
+            raise ValueError(f"Email links/assets must be absolute https: {url!r} (G3)")
+        host = urlparse(low).hostname or ""
+        if not _host_ok(host) or urlparse(low).username is not None:
+            raise ValueError(f"Shortened, numeric-host or credential-bearing URL: {url!r} (G3)")
+    for href, text in scan.anchors:
+        real = urlparse(href.strip().lower()).hostname or ""
+        if not real:
+            continue
+        for m in _HOSTISH.finditer(text):
+            if not _same_site(m.group(1).lower(), real):
+                raise ValueError(f"Anchor text {m.group(1)!r} ≠ real link host {real!r} (G3)")
+
+async def send_email(*, to: str, subject: str, html: str) -> str | None:
+    _assert_safe_email(subject, html)
+    payload = {"to": [to], "subject": subject, "html": html, "from_name": EMAIL_FROM_NAME}
+    if EMAIL_REPLY_TO:
+        payload["contact_email"] = EMAIL_REPLY_TO
+    async with httpx.AsyncClient(timeout=30) as hc:
+        resp = await hc.post(f"{EMAIL_BASE_URL}/api/v1/email/send", headers={"X-Email-Key": EMAIL_KEY}, json=payload)
+    resp.raise_for_status()
+    return resp.json().get("id")
+
+def _row(label: str, value: str) -> str:
+    return (f'<tr><td style="padding:8px 12px;color:#6E7E91;font-size:12px;text-transform:uppercase;letter-spacing:.12em">{label}</td>'
+            f'<td style="padding:8px 12px;color:#0D1726;font-size:15px">{value}</td></tr>')
+
+def booking_alert_html(appt: dict) -> str:
+    rows = "".join([
+        _row("Client", escape(appt["name"])),
+        _row("Phone", f'<a href="tel:{escape(appt["phone"])}" style="color:#C76A3D">{escape(appt["phone"])}</a>'),
+        _row("Email", escape(appt["email"]) or "—"),
+        _row("Slot", f'{escape(appt["date"])} · {escape(appt["time"])} IST'),
+        _row("Type", escape(appt["type_label"])),
+        _row("Notes", escape(appt["message"]) or "—"),
+        _row("Calendar", "Added to Google Calendar" if appt.get("google_event_id") else "Not synced (connect Google Calendar in the admin dashboard)"),
+    ])
+    return (f'<table role="presentation" width="100%" style="background:#F9F6F0;padding:32px 0"><tr><td align="center">'
+            f'<table role="presentation" width="560" style="background:#FFFFFF;border:1px solid #E5DCD0;font-family:Georgia,serif">'
+            f'<tr><td style="padding:28px 32px 8px;color:#C76A3D;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-family:Arial,sans-serif">{escape(EMAIL_FROM_NAME)} · New booking</td></tr>'
+            f'<tr><td style="padding:0 32px 20px;color:#0B1528;font-size:26px">A client has reserved an hour.</td></tr>'
+            f'<tr><td style="padding:0 20px 24px"><table role="presentation" width="100%" style="font-family:Arial,sans-serif;border-top:1px solid #E5DCD0">{rows}</table></td></tr>'
+            f'<tr><td style="padding:16px 32px 28px;color:#6E7E91;font-size:12px;font-family:Arial,sans-serif;border-top:1px solid #E5DCD0">'
+            f'Sent automatically by {escape(EMAIL_FROM_NAME)} when a visitor books on your website.</td></tr>'
+            f'</table></td></tr></table>')
+
+async def notify_new_booking(appt: dict):
+    try:
+        await send_email(to=NOTIFY_EMAIL, subject=f"New booking · {appt['name']} · {appt['date']} {appt['time']} IST", html=booking_alert_html(appt))
+        await db.appointments.update_one({"id": appt["id"]}, {"$set": {"notified": True}})
+    except Exception as e:
+        logger.error(f"booking email failed: {e}")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -135,14 +251,16 @@ async def refresh(request: Request, response: Response):
 
 # ---------------- Chatbot ----------------
 
-CHAT_SYSTEM = """You are the digital concierge of Satvik Kattimani, an AMFI-registered Mutual Fund Distributor (ARN-349743) based in India.
+CHAT_SYSTEM = """You are the digital concierge of Satvik Capital — the personal financial advisory practice of Satvik Kattimani, based in India.
 
-Persona: warm, polished, discreet — like the front desk of a private wealth boutique. Keep answers concise (2-4 sentences).
+About Satvik: holds a Bachelor's degree in Investment Banking and interned at an asset management company (AMC) where he worked on the ideation and execution of mutual fund products. His edge: he understands how funds are built from the inside, so he selects and monitors them with an insider's eye. He personally handles every client — no call centres.
+
+Persona: warm, polished, discreet — like the front desk of a private wealth atelier. Keep answers concise (2-4 sentences). Refer to Satvik as a "financial advisor". Do NOT use the phrase "mutual fund distributor" unless a visitor explicitly asks about registration, in which case say Satvik is AMFI-registered (ARN-349743).
 
 What you do:
-- Answer educational questions about mutual funds: SIPs, lumpsum investing, ELSS & tax saving, debt vs equity funds, portfolio review/restructuring, KYC basics, goal-based investing.
-- Explain Satvik's services: SIP planning, portfolio review & restructuring, goal-based investing, tax-efficient investing, ongoing advisory.
-- Encourage visitors to book a FREE portfolio consultation or restructuring session via the "Book Consultation" section on this website.
+- Answer educational questions about mutual funds: SIPs, lumpsum investing, ELSS & tax saving, debt vs equity funds, portfolio review/restructuring, KYC basics, goal-based investing, direct vs regular plans (regular plans include Satvik's ongoing guidance, rebalancing and behavioural coaching; direct plans have a lower expense ratio but you manage everything alone).
+- Explain Satvik Capital's services: SIP planning, portfolio review & restructuring, goal-based investing, tax-efficient investing, ongoing advisory.
+- Point visitors to the SIP calculator on this website and encourage them to book a FREE portfolio consultation via the "Book" section.
 
 Strict rules (SEBI/AMFI compliance):
 - NEVER recommend or name specific mutual fund schemes, stocks, or give buy/sell calls.
@@ -150,7 +268,7 @@ Strict rules (SEBI/AMFI compliance):
 - Always remind, where relevant, that mutual fund investments are subject to market risks.
 - For anything personal or advice-seeking ("which fund should I buy", "is my portfolio good"), politely say it needs a personalised review and invite them to book a free consultation.
 - For urgent human help, share: Phone 9740542188, Email satvikkinvestments@gmail.com.
-- If asked who you are, say you are the digital concierge of Satvik Kattimani, mutual fund distributor (ARN-349743)."""
+- If asked who you are, say you are the digital concierge of Satvik Capital, the financial advisory practice of Satvik Kattimani."""
 
 class ChatRequest(BaseModel):
     session_id: str
@@ -247,7 +365,7 @@ async def get_slots(date: str = Query(...)):
     return {"date": date, "slots": slots}
 
 @api_router.post("/appointments")
-async def create_appointment(body: AppointmentCreate):
+async def create_appointment(body: AppointmentCreate, background: BackgroundTasks):
     if not body.name.strip() or not body.phone.strip():
         raise HTTPException(status_code=400, detail="Name and phone are required")
     if body.type not in APPOINTMENT_TYPES:
@@ -278,6 +396,7 @@ async def create_appointment(body: AppointmentCreate):
     doc.pop("_id", None)
     doc["created_at"] = doc["created_at"].isoformat()
     doc["google_event_id"] = event_id
+    background.add_task(notify_new_booking, doc)
     return doc
 
 # ---------------- Admin ----------------
@@ -373,7 +492,7 @@ async def maybe_create_calendar_event(appt: dict):
 
 @api_router.get("/")
 async def root():
-    return {"message": "Satvik Kattimani — Wealth Advisory API"}
+    return {"message": "Satvik Capital — Financial Advisory API"}
 
 app.include_router(api_router)
 

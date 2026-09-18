@@ -1,90 +1,90 @@
 import { motion } from "framer-motion";
-import { Sprout, Repeat, Target, Landmark, ShieldCheck, CalendarClock } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-const services = [
+const chapters = [
   {
-    icon: Sprout,
+    n: "I",
+    title: "Portfolio Architecture",
+    lead: "The blueprint before the bricks.",
+    text: "A forensic read of what you already hold — overlap, hidden concentration, dead weight. Then a rebuilt allocation with a written rationale you can hold me to.",
+    tags: ["Portfolio review", "Restructuring", "Asset allocation"],
+  },
+  {
+    n: "II",
     title: "SIP Planning",
-    text: "Disciplined, automated investing calibrated to your income rhythm and ambitions — from your first SIP to a sophisticated multi-fund ladder.",
-    tall: true,
+    lead: "Discipline, automated.",
+    text: "From a first ₹5,000 SIP to a multi-fund ladder for a household — calibrated to your income rhythm, your goals and your stomach for volatility.",
+    tags: ["Goal-based SIPs", "Step-up plans", "Education & retirement"],
   },
   {
-    icon: Repeat,
-    title: "Portfolio Review & Restructuring",
-    text: "A forensic look at what you hold. We prune underperformers, rebalance allocation and realign everything to your goals.",
+    n: "III",
+    title: "Fund Selection & Monitoring",
+    lead: "Read the way its author intended.",
+    text: "Mandates, manager conviction, portfolio construction — evaluated with an AMC-trained eye, then monitored quarterly. Tax-efficient structuring through ELSS and thoughtful holding periods is built in.",
+    tags: ["Scheme due diligence", "Tax-efficient investing", "Quarterly reviews"],
   },
   {
-    icon: Target,
-    title: "Goal-Based Investing",
-    text: "Education, a home, retirement — each goal gets its own roadmap, timeline and fund strategy.",
-  },
-  {
-    icon: Landmark,
-    title: "Tax-Efficient Investing",
-    text: "ELSS and smart structuring so more of what you earn stays yours, within the rules.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Wealth Preservation",
-    text: "Debt and hybrid strategies for capital you've already built and intend to protect.",
-  },
-  {
-    icon: CalendarClock,
-    title: "Ongoing Advisory",
-    text: "Periodic reviews, rebalancing nudges and a direct line to Satvik as markets and life evolve.",
+    n: "IV",
+    title: "The Human Anchor",
+    lead: "One phone number. Every time.",
+    text: "Markets test people more than portfolios. You get a direct line to Satvik in every drawdown and every windfall — no call centres, no ticket numbers, no hand-offs.",
+    tags: ["Direct access", "Behavioural coaching", "Ongoing advisory"],
   },
 ];
 
-export const Services = () => {
-  return (
-    <section id="services" data-testid="services-section" className="py-28 lg:py-36 bg-[#0A0A0A]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="max-w-2xl"
-        >
-          <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37] font-medium">Services</p>
-          <h2 className="font-serif text-4xl sm:text-5xl text-white mt-6 leading-tight">
-            Everything your portfolio
+export const Services = () => (
+  <section id="services" data-testid="services-section" className="py-28 lg:py-40 bg-paper-ivory text-ink">
+    <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="grid lg:grid-cols-12 gap-8 items-end"
+      >
+        <div className="lg:col-span-7">
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-copper font-medium">02 — Four Chapters</p>
+          <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mt-6">
+            What working together
             <br />
-            <span className="italic text-[#E6D5B8]">quietly needs.</span>
+            <span className="italic text-copper">actually looks like.</span>
           </h2>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
-          {services.map((s, i) => (
-            <motion.div
-              key={s.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: (i % 3) * 0.12 }}
-              data-testid={`service-card-${i}`}
-              className={`group bg-[#121212] border border-white/10 p-10 hover:border-white/20 hover:-translate-y-1 transition-[border-color,transform] duration-500 ${
-                s.tall ? "lg:row-span-2 flex flex-col justify-between" : ""
-              }`}
-            >
-              <div>
-                <s.icon size={26} className="text-[#D4AF37]" />
-                <h3 className="font-serif text-2xl text-white mt-6">{s.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed mt-4">{s.text}</p>
-              </div>
-              {s.tall && (
-                <a
-                  href="#booking"
-                  data-testid="service-sip-cta"
-                  className="mt-10 inline-flex w-fit rounded-full border border-[#D4AF37]/40 text-[#D4AF37] text-sm px-6 py-2.5 hover:bg-[#D4AF37] hover:text-black transition-colors duration-300"
-                >
-                  Start a SIP conversation
-                </a>
-              )}
-            </motion.div>
-          ))}
         </div>
+        <p className="lg:col-span-4 lg:col-start-9 text-ink-2 text-base leading-relaxed font-light">
+          A manifesto in four movements. Every client relationship at Satvik Capital moves through them — in this order, at your pace.
+        </p>
+      </motion.div>
+
+      <div className="mt-20 border-t border-ink/10">
+        {chapters.map((c, i) => (
+          <motion.article
+            key={c.n}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.05 * i }}
+            data-testid={`chapter-${i}`}
+            className="group grid lg:grid-cols-12 gap-6 lg:gap-8 py-12 lg:py-14 border-b border-ink/10 hover:bg-white/60 transition-colors duration-500 lg:px-6 lg:-mx-6"
+          >
+            <span className="lg:col-span-2 font-serif text-6xl lg:text-7xl text-copper/70 leading-none group-hover:text-copper transition-colors duration-500">{c.n}</span>
+            <div className="lg:col-span-4">
+              <h3 className="font-serif text-3xl lg:text-4xl leading-tight">{c.title}</h3>
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-3 mt-3">{c.lead}</p>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="text-ink-2 text-base leading-relaxed font-light">{c.text}</p>
+              <div className="flex flex-wrap gap-2 mt-6">
+                {c.tags.map((t) => (
+                  <span key={t} className="font-mono text-[10px] uppercase tracking-[0.15em] border border-ink/15 px-3 py-1.5 text-ink-2">{t}</span>
+                ))}
+              </div>
+            </div>
+            <a href="#booking" aria-label={`Discuss ${c.title}`} data-testid={`chapter-cta-${i}`} className="lg:col-span-1 justify-self-end self-start w-11 h-11 border border-ink/15 flex items-center justify-center text-ink-3 group-hover:border-copper group-hover:text-copper group-hover:rotate-45 transition-[transform,color,border-color] duration-500">
+              <ArrowUpRight size={18} />
+            </a>
+          </motion.article>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);

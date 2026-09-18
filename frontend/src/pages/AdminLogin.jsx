@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { ShieldCheck } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -34,17 +34,17 @@ export default function AdminLogin() {
   };
 
   return (
-    <div data-testid="admin-login-page" className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-6">
-      <div className="w-full max-w-md bg-[#121212] border border-white/10 p-10">
-        <ShieldCheck size={26} className="text-[#D4AF37]" />
-        <h1 className="font-serif text-3xl text-white mt-6">Advisor Login</h1>
-        <p className="text-white/40 text-sm mt-2">Satvik Kattimani · ARN-349743</p>
+    <div data-testid="admin-login-page" className="min-h-screen bg-navy nav-grid flex items-center justify-center px-6">
+      <div className="w-full max-w-md bg-navy-deep/90 backdrop-blur-xl border border-copper/25 p-10 shadow-[0_8px_32px_rgba(0,0,0,0.35)]">
+        <Logo size={44} />
+        <h1 className="font-serif text-3xl text-white mt-8">Advisor Login</h1>
+        <p className="text-white/40 text-sm mt-2">Private command centre</p>
 
         <form onSubmit={submit} data-testid="admin-login-form" className="mt-10 space-y-8">
           <input
             data-testid="admin-email-input"
             type="email"
-            className="lux-input"
+            className="navy-input"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -53,7 +53,7 @@ export default function AdminLogin() {
           <input
             data-testid="admin-password-input"
             type="password"
-            className="lux-input"
+            className="navy-input"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -66,7 +66,7 @@ export default function AdminLogin() {
             type="submit"
             data-testid="admin-login-submit-btn"
             disabled={loading}
-            className="w-full rounded-full bg-[#D4AF37] text-black font-medium py-3.5 hover:bg-[#E6D5B8] transition-colors duration-300 disabled:opacity-50"
+            className="w-full bg-copper text-white font-medium py-3.5 hover:bg-copper-glow transition-colors duration-300 disabled:opacity-50"
           >
             {loading ? "Signing in…" : "Sign In"}
           </button>

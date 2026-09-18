@@ -1,82 +1,91 @@
 import { motion } from "framer-motion";
-import { BadgeCheck, LineChart, Handshake } from "lucide-react";
+import { GraduationCap, FlaskConical, Handshake } from "lucide-react";
 
-const PORTRAIT =
-  "https://images.unsplash.com/photo-1764546899196-b53061b1b609?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBJbmRpYW4lMjBidXNpbmVzcyUyMG1hbiUyMHBvcnRyYWl0JTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzg1ODM3OTU2fDA&ixlib=rb-4.1.0&q=85";
+const PORTRAIT = "https://images.pexels.com/photos/36879437/pexels-photo-36879437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 
-const pillars = [
-  { icon: BadgeCheck, title: "Registered & Regulated", text: "AMFI-registered distributor, ARN-349743. Every recommendation within SEBI's framework." },
-  { icon: LineChart, title: "Goal-First Approach", text: "Portfolios built around your milestones — not around products." },
-  { icon: Handshake, title: "One Point of Contact", text: "You deal directly with Satvik. No call centres, no hand-offs." },
+const edges = [
+  {
+    icon: GraduationCap,
+    title: "Bachelor's in Investment Banking",
+    text: "Formal training in valuation, capital markets and portfolio theory — the grammar behind every allocation decision I make for you.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Inside the AMC engine room",
+    text: "Interned at an asset management company on the ideation and execution of mutual fund products. I have seen how a fund is conceived, stress-tested and launched — so I read a scheme document the way its author intended.",
+  },
+  {
+    icon: Handshake,
+    title: "The edge you actually feel",
+    text: "Most advisors compare funds from the outside. I evaluate mandate, manager conviction and portfolio construction from the inside — then hold your hand through the market's mood swings.",
+  },
 ];
 
-export const About = () => {
-  return (
-    <section id="about" data-testid="about-section" className="py-28 lg:py-36 bg-[#0A0A0A]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-        >
-          <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37] font-medium">About</p>
-          <h2 className="font-serif text-4xl sm:text-5xl text-white mt-6 leading-tight">
-            A personal practice,
-            <br />
-            <span className="italic text-[#E6D5B8]">not a product desk.</span>
-          </h2>
-          <p className="text-white/70 text-base sm:text-lg leading-relaxed mt-8">
-            I'm Satvik Kattimani — a SEBI-registered, AMFI-certified Mutual Fund
-            Distributor. I began this practice in 2026 with a simple conviction:
-            wealth advice should feel like a private conversation, not a sales pitch.
-          </p>
-          <p className="text-white/70 text-base sm:text-lg leading-relaxed mt-5">
-            I work with a select circle of families and professionals, reviewing
-            portfolios, restructuring what isn't working, and building disciplined
-            SIP strategies around the goals that matter to you.
-          </p>
-          <div className="mt-12 space-y-8">
-            {pillars.map((p, i) => (
-              <motion.div
-                key={p.title}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.12 }}
-                className="flex gap-5"
-                data-testid={`about-pillar-${i}`}
-              >
-                <p.icon size={20} className="text-[#D4AF37] mt-1 shrink-0" />
-                <div>
-                  <h3 className="text-white font-medium">{p.title}</h3>
-                  <p className="text-white/50 text-sm mt-1 leading-relaxed">{p.text}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+const reveal = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-100px" } };
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.9 }}
-          className="relative lg:translate-y-10"
-        >
-          <div className="absolute -inset-4 border border-[#D4AF37]/20 translate-x-6 translate-y-6" />
+export const About = () => (
+  <section id="about" data-testid="about-section" className="relative py-28 lg:py-40 bg-paper text-ink overflow-hidden">
+    <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-14 lg:gap-10 items-start">
+      <motion.div {...reveal} transition={{ duration: 0.9 }} className="lg:col-span-5 lg:sticky lg:top-32">
+        <div className="relative">
+          <div className="absolute -inset-3 border border-copper/40 -translate-x-4 translate-y-4 pointer-events-none" />
           <img
             src={PORTRAIT}
-            alt="Satvik Kattimani"
+            alt="Satvik Kattimani, Financial Advisor"
             data-testid="about-portrait"
-            className="relative w-full aspect-[4/5] object-cover grayscale hover:grayscale-0 transition-[filter] duration-700"
+            className="relative w-full aspect-[4/5] object-cover sepia-[0.25] contrast-[1.05]"
           />
-          <div className="absolute bottom-6 left-6 bg-[#0A0A0A]/80 backdrop-blur-xl border border-white/10 px-6 py-4">
-            <p className="font-serif text-xl text-white">Satvik Kattimani</p>
-            <p className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] mt-1">Mutual Fund Distributor · ARN-349743</p>
+          <div className="absolute -bottom-8 -right-4 sm:right-8 w-28 h-28 rounded-full bg-copper text-white flex flex-col items-center justify-center shadow-[0_12px_30px_rgba(199,106,61,0.35)] rotate-[-8deg]">
+            <img src="/brand/logo.png" alt="" className="w-10 h-10 brightness-0 invert" />
+            <span className="font-mono text-[8px] uppercase tracking-[0.25em] mt-1">Est. 2026</span>
           </div>
+        </div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-3 mt-14">Portrait placeholder · to be replaced with Satvik's photograph</p>
+      </motion.div>
+
+      <div className="lg:col-span-6 lg:col-start-7">
+        <motion.div {...reveal} transition={{ duration: 0.8 }}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-copper font-medium">01 — The Advisor</p>
+          <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mt-6">
+            Not a seller of funds.
+            <br />
+            <span className="italic text-copper">A builder of them.</span>
+          </h2>
+          <p className="text-ink-2 text-base sm:text-lg leading-relaxed mt-8 font-light">
+            I'm Satvik Kattimani, founder of Satvik Capital and your financial advisor. I hold a
+            Bachelor's degree in Investment Banking and spent my formative months inside an
+            asset management company, working on how mutual funds are ideated, structured and
+            executed before they ever reach an investor's screen.
+          </p>
+          <p className="text-ink-2 text-base sm:text-lg leading-relaxed mt-5 font-light">
+            That vantage point is my edge. When I review your portfolio, I'm not reading a
+            star rating — I'm reading the fund the way the people who built it do. Satvik
+            Capital exists so a select circle of families and professionals can borrow that lens.
+          </p>
         </motion.div>
+
+        <div className="mt-14 divide-y divide-ink/10 border-y border-ink/10">
+          {edges.map((e, i) => (
+            <motion.div
+              key={e.title}
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: i * 0.12 }}
+              data-testid={`about-edge-${i}`}
+              className="group grid grid-cols-[auto_1fr] gap-6 py-8"
+            >
+              <span className="w-12 h-12 border border-copper/40 flex items-center justify-center text-copper group-hover:bg-copper group-hover:text-white transition-colors duration-500">
+                <e.icon size={20} />
+              </span>
+              <div>
+                <h3 className="font-serif text-2xl">{e.title}</h3>
+                <p className="text-ink-2 text-sm sm:text-[15px] leading-relaxed mt-2 font-light">{e.text}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);

@@ -10,6 +10,7 @@ module.exports = {
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         sans: ['Manrope', 'ui-sans-serif', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -53,6 +54,10 @@ module.exports = {
         gold: '#D4AF37',
         sand: '#E6D5B8',
         obsidian: '#0A0A0A',
+        navy: { DEFAULT: '#0B1528', deep: '#0F1F38', surface: '#162847', abyss: '#070D18' },
+        copper: { DEFAULT: '#C76A3D', glow: '#DE7E4E', foil: '#B35A2F', tint: '#F5EBE4' },
+        paper: { DEFAULT: '#F9F6F0', ivory: '#F3EDE2' },
+        ink: { DEFAULT: '#0D1726', 2: '#415065', 3: '#6E7E91' },
       },
       keyframes: {
         'accordion-down': {
@@ -64,8 +69,8 @@ module.exports = {
           to: { height: '0' }
         },
         'pulse-gold': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(212, 175, 55, 0.35)' },
-          '50%': { boxShadow: '0 0 0 12px rgba(212, 175, 55, 0)' }
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(199, 106, 61, 0.4)' },
+          '50%': { boxShadow: '0 0 0 14px rgba(199, 106, 61, 0)' }
         }
       },
       animation: {
