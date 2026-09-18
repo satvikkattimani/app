@@ -1,0 +1,27 @@
+{
+  "summary": "Comprehensive backend + frontend regression for the Satvik Capital redesign. All 12 pytest cases pass (root/persona/slots/appointments incl. 409 dup + email side-effect verified via backend log 202 Accepted, admin login incl. bad-password 401, appointments list, google/status=false, chat streaming with 'Satvik Capital' present and no 'mutual fund distributor'). Frontend Playwright verified: intro overlay with cycling script (observed 'സാത്വിക്') + skip, hero heading, navbar + all 7 nav testids, footer-arn contains the only 'Mutual Fund Distributor · ARN-349743' occurrence on the page (mfd/arn count=1, hero/about have no 'Distributor'), SIP calculator defaults ₹45.00 L / ₹1.26 Cr + SVG chart, Direct vs Regular has 7 rows, delta ₹48 L, direct ₹1.85 Cr, regular ₹2.33 Cr + SVG, booking flow end-to-end (picked future weekday 2026-09-21 10:00, filled name/phone, saw 'Your hour is reserved.', reset via booking-another-btn works), chat widget greeting mentions Satvik Capital and streamed reply to 'What is a SIP?' was rendered, contact links correct (tel/mailto/wa.me), admin login themed navy, dashboard shows appointments-table containing QA Test booking, google-connect-btn shows 'Google Calendar is not configured yet' toast, logout redirects back to /admin/login. No console errors other than the intentional 503 from google-connect click.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py: notify_new_booking is scheduled after building doc dict but the created_at ISO conversion mutates the same dict later used elsewhere — safe here but note the pattern. No action needed.",
+    "server.py get_slots is invoked directly by create_appointment; raises HTTPException on out-of-range dates leading to 400 responses when a client posts an old/invalid date — acceptable.",
+    "Landing.jsx uses sessionStorage.getItem synchronously in useState initializer — fine for CSR but would break in SSR (non-issue for CRA)."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin: satvikkinvestments@gmail.com / Satvik@2026 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created two QA bookings during backend + frontend tests (name prefixed 'QA Test'); backend one was cancelled in cleanup. Frontend booking (QA Test UI on 2026-09-21 10:00 IST) remains — main agent may cancel via admin dashboard if desired.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend pytest file: /app/backend/tests/backend_test.py — reads REACT_APP_BACKEND_URL from env or /app/frontend/.env fallback. Intro overlay uses sessionStorage key sc_intro_seen; new browser context always shows it. Skip button triggers exit animation so overlay is briefly still in DOM ~600ms after click; wait >=1s before asserting hero interactivity. Footer testids footer-phone / footer-email are on the wrapping <p>, hrefs are on inner <a>. Google calendar is intentionally unconfigured (configured:false is expected).",
+  "rca of the issue": "N/A — no bugs found."
+}
