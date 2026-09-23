@@ -33,7 +33,7 @@ export const Intro = ({ onDone }) => {
 
   useEffect(() => {
     if (!final) return undefined;
-    const t = setTimeout(onDone, 2300);
+    const t = setTimeout(onDone, 5200);
     return () => clearTimeout(t);
   }, [final, onDone]);
 
@@ -104,14 +104,15 @@ export const Intro = ({ onDone }) => {
                 </motion.span>
               ))}
             </h1>
-            <motion.p
-              className="font-scripts text-white/55 text-lg sm:text-xl mt-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.7 }}
+            <motion.div
+              className="mt-8 flex flex-col items-center gap-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.8 }}
             >
-              सत्येन धार्यते धनम् <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/35 ml-3">Wealth is held by truth</span>
-            </motion.p>
+              <p className="font-scripts text-copper-glow text-2xl sm:text-3xl leading-none">सत्येन धार्यते धनम्</p>
+              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.32em] text-white/55">Wealth is held by truth</p>
+            </motion.div>
           </div>
         )}
       </div>

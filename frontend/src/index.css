@@ -35,7 +35,7 @@
         @apply border-border;
     }
     body {
-        @apply bg-paper text-ink font-sans;
+        @apply bg-navy text-white font-sans;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }

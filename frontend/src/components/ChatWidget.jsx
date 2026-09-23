@@ -6,7 +6,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const GREETING = {
   role: "assistant",
   content:
-    "Good day. I'm the digital concierge of Satvik Capital, the financial advisory practice of Satvik Kattimani. Ask me about SIPs, portfolio reviews, direct vs regular plans — or let me help you book a free consultation.",
+    "Good day. I'm the digital concierge of Satvik Capital, a boutique capital advisory practice. Ask me about SIPs, portfolio reviews, or how AI, direct and guided regular plans differ, or let me help you book a free consultation.",
 };
 
 export const ChatWidget = () => {
@@ -72,7 +72,7 @@ export const ChatWidget = () => {
     } catch {
       setMessages((m) => {
         const copy = [...m];
-        copy[copy.length - 1] = { role: "assistant", content: "I'm momentarily unavailable — please call 9740542188 or email satvikkinvestments@gmail.com." };
+        copy[copy.length - 1] = { role: "assistant", content: "I'm momentarily unavailable. Please email satvikkinvestments@gmail.com or book a consultation on this page." };
         return copy;
       });
     } finally {

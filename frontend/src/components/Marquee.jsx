@@ -1,6 +1,6 @@
 const ITEMS = [
   "No automated queues",
-  "Direct line · +91 97405 42188",
+  "A direct line, earned on booking",
   "Trained inside an asset management house",
   "Disciplined asset allocation",
   "Portfolio restructuring",

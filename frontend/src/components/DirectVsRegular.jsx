@@ -15,25 +15,32 @@ const fv = (rate, months) => {
 const cr = (n) => (n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : `₹${(n / 1e5).toFixed(0)} L`);
 
 const rows = [
-  { k: "Expense ratio", d: "Lower by roughly 0.5–1% a year", r: "Includes your advisor's ongoing fee", win: "d" },
-  { k: "Fund selection", d: "You, from 1,500+ schemes and star ratings", r: "AMC-trained due diligence on mandate and manager", win: "r" },
-  { k: "Rebalancing", d: "When you remember", r: "Scheduled, quarterly, documented", win: "r" },
-  { k: "A 30% market fall", d: "You, alone, at 2 a.m., with a redeem button", r: "Satvik on the phone before you press anything", win: "r" },
-  { k: "KYC, nominations, taxation", d: "Your evenings", r: "Handled, with harvesting done on time", win: "r" },
-  { k: "Investor behaviour gap*", d: "Industry studies put it at −3% to −4% p.a.", r: "Narrowed substantially by a human anchor", win: "r" },
-  { k: "Accountability", d: "Nobody", r: "One name. One number.", win: "r" },
+  { k: "Cost", ai: "Low flat platform fee", d: "Lowest expense ratio", r: "Advisory built into the plan" },
+  { k: "Fund selection", ai: "An algorithm and a risk quiz", d: "You, from 1,500+ schemes", r: "AMC-trained due diligence on mandate and manager" },
+  { k: "Rebalancing", ai: "Auto, rule-based, no context", d: "When you remember", r: "Scheduled, quarterly, documented" },
+  { k: "A 30% market fall", ai: "A push notification at 2 a.m.", d: "You, alone, with a redeem button", r: "Your advisor on the line before you press anything" },
+  { k: "Behaviour coaching", ai: "None, it is software", d: "None", r: "A human who talks you off the ledge" },
+  { k: "KYC, tax, paperwork", ai: "Some automation, you verify", d: "Your evenings", r: "Handled, with harvesting done on time" },
+  { k: "Accountability", ai: "A support ticket", d: "Nobody", r: "One name. One relationship." },
 ];
 
 const Tip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-paper text-ink px-4 py-3 text-xs font-mono shadow-xl">
-      <p className="text-ink-3 uppercase tracking-[0.2em] mb-2">Year {label}</p>
-      <p>Direct, DIY <span className="text-ink-2">{cr(payload[0].value)}</span></p>
-      <p>Regular, guided <span className="text-copper">{cr(payload[1].value)}</span></p>
+    <div className="bg-navy-abyss border border-copper/30 text-white px-4 py-3 text-xs font-mono shadow-xl">
+      <p className="text-white/50 uppercase tracking-[0.2em] mb-2">Year {label}</p>
+      <p>Direct, DIY <span className="text-white/70">{cr(payload[0].value)}</span></p>
+      <p>Regular, guided <span className="text-copper-glow">{cr(payload[1].value)}</span></p>
     </div>
   );
 };
+
+const Cell = ({ text, win, extra = "" }) => (
+  <div className={`p-4 sm:p-5 font-light flex gap-2 ${extra}`}>
+    {win ? <Check size={14} className="text-copper-glow mt-1 shrink-0" /> : <X size={14} className="text-white/25 mt-1 shrink-0" />}
+    <span className={win ? "text-white/90" : "text-white/50"}>{text}</span>
+  </div>
+);
 
 export const DirectVsRegular = () => {
   const data = useMemo(() => Array.from({ length: YEARS + 1 }, (_, y) => ({ year: y, direct: Math.round(fv(DIRECT_REALISED, y * 12)), regular: Math.round(fv(REGULAR_REALISED, y * 12)) })), []);
@@ -46,39 +53,37 @@ export const DirectVsRegular = () => {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }} className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-7">
-            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-copper-glow font-medium">04 — The Honest Comparison</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-copper-glow font-medium">04 · The Honest Comparison</p>
             <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mt-6">
-              Direct plan
-              <span className="text-white/40 font-light"> vs </span>
-              <span className="italic text-copper-glow">guided regular plan.</span>
+              AI advisory, direct plans,
+              <br />
+              <span className="italic text-copper-glow">and a guided regular plan.</span>
             </h2>
           </div>
           <p className="lg:col-span-4 lg:col-start-9 text-white/60 text-base leading-relaxed font-light self-end">
-            The direct plan saves you a fraction of a percent. What it costs you is everything the fraction was paying for — and over twenty years, that gap compounds too.
+            An app is cheap. A direct plan is cheaper still. What both cost you is a human who picks up the phone when the market falls, and over twenty years, that silence compounds too.
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 mt-16">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="lg:col-span-7">
-            <div data-testid="plans-matrix" className="border border-white/10 bg-navy-deep/80 backdrop-blur-xl">
-              <div className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-white/10 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-                <div className="p-4 sm:p-5" />
-                <div className="p-4 sm:p-5 border-l border-white/10">Direct · DIY</div>
-                <div className="p-4 sm:p-5 border-l border-copper/40 text-copper-glow bg-copper/5">Regular · with Satvik</div>
-              </div>
-              {rows.map((r, i) => (
-                <div key={r.k} data-testid={`plans-row-${i}`} className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-white/5 last:border-b-0 text-[13px] sm:text-sm">
-                  <div className="p-4 sm:p-5 font-serif text-base sm:text-lg text-white/90">{r.k}</div>
-                  <div className="p-4 sm:p-5 border-l border-white/10 text-white/55 font-light flex gap-2">
-                    {r.win === "d" ? <Check size={14} className="text-emerald-400 mt-1 shrink-0" /> : <X size={14} className="text-white/25 mt-1 shrink-0" />}
-                    {r.d}
-                  </div>
-                  <div className="p-4 sm:p-5 border-l border-copper/30 bg-copper/5 text-white/85 font-light flex gap-2">
-                    {r.win === "r" ? <Check size={14} className="text-copper-glow mt-1 shrink-0" /> : <X size={14} className="text-white/25 mt-1 shrink-0" />}
-                    {r.r}
-                  </div>
+            <div className="overflow-x-auto">
+              <div data-testid="plans-matrix" className="border border-white/10 bg-navy-deep/80 backdrop-blur-xl min-w-[640px]">
+                <div className="grid grid-cols-[1fr_1fr_1fr_1.1fr] border-b border-white/10 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+                  <div className="p-4 sm:p-5" />
+                  <div className="p-4 sm:p-5 border-l border-white/10">AI / Robo</div>
+                  <div className="p-4 sm:p-5 border-l border-white/10">Direct · DIY</div>
+                  <div className="p-4 sm:p-5 border-l border-copper/40 text-copper-glow bg-copper/5">Regular · guided</div>
                 </div>
-              ))}
+                {rows.map((r, i) => (
+                  <div key={r.k} data-testid={`plans-row-${i}`} className="grid grid-cols-[1fr_1fr_1fr_1.1fr] border-b border-white/5 last:border-b-0 text-[13px] sm:text-sm">
+                    <div className="p-4 sm:p-5 font-serif text-base sm:text-lg text-white/90">{r.k}</div>
+                    <Cell text={r.ai} win={false} extra="border-l border-white/10" />
+                    <Cell text={r.d} win={false} extra="border-l border-white/10" />
+                    <Cell text={r.r} win extra="border-l border-copper/30 bg-copper/5" />
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
 
@@ -86,7 +91,7 @@ export const DirectVsRegular = () => {
             <div className="border border-copper/30 p-8 lg:p-10 bg-navy-deep/60 backdrop-blur-xl">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Illustration · ₹25,000 SIP · 20 years</p>
               <p data-testid="plans-delta" className="font-serif text-5xl lg:text-6xl text-copper-glow mt-4 leading-none">{cr(delta)}</p>
-              <p className="text-white/60 text-sm mt-3 font-light">more wealth with the guided regular plan — after paying the advisor.</p>
+              <p className="text-white/60 text-sm mt-3 font-light">more wealth with the guided regular plan, after paying the advisor.</p>
 
               <div data-testid="plans-chart" className="h-[240px] mt-8 -ml-6">
                 <ResponsiveContainer width="100%" height="100%">
@@ -115,7 +120,7 @@ export const DirectVsRegular = () => {
               </dl>
             </div>
             <p className="text-white/35 text-[11px] leading-relaxed mt-6 font-light">
-              *Assumes a 12% underlying fund return. Direct plan: +0.75% lower expenses, −3% investor behaviour gap (mistimed entries and exits, missed rebalancing) as observed in Indian and global investor-return studies. Regular plan: net of advisory cost, −0.5% residual gap. Illustrative only; actual outcomes vary and returns are not guaranteed.
+              *Assumes a 12% underlying fund return. Direct and AI/robo routes: lower cost, but a −3% investor behaviour gap (mistimed entries and exits, missed rebalancing) as observed in Indian and global investor-return studies. Guided regular plan: net of advisory cost, −0.5% residual gap. Illustrative only; actual outcomes vary and returns are not guaranteed.
             </p>
           </motion.div>
         </div>

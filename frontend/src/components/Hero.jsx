@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
 
-const LINES = ["Navigating volatile tides.", "Anchoring generational wealth."];
+const LINES = ["Navigating volatile tides.", "Compounding wealth, patiently."];
 
 const MaskedLine = ({ text, delay, italic }) => (
   <span className="block overflow-hidden pb-[0.12em] -mb-[0.12em]">
@@ -51,7 +51,7 @@ export const Hero = ({ ready }) => {
           animate={ready ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8, delay: base }}
         >
-          <Compass size={14} /> The personal financial advisory practice of Satvik Kattimani
+          <Compass size={14} /> A boutique capital advisory practice
         </motion.p>
 
         {ready && (
@@ -68,9 +68,9 @@ export const Hero = ({ ready }) => {
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.9, delay: base + 0.7 }}
           >
-            Portfolios built the way funds are built inside an asset management house — with
+            Portfolios built the way funds are built inside an asset management house, with
             conviction, structure and a steady hand. SIP planning, portfolio restructuring and
-            goal-based investing, personally guided by Satvik.
+            goal-based investing, personally guided by your advisor.
           </motion.p>
 
           <motion.div
@@ -100,10 +100,10 @@ export const Hero = ({ ready }) => {
           animate={ready ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: base + 1.2 }}
         >
-          <span>Bachelor's · Investment Banking</span>
+          <span>Bachelor's, Investment Banking</span>
           <span>AMC-trained in fund construction</span>
-          <span>One advisor, direct line</span>
-          <span>+91 97405 42188</span>
+          <span>One advisor, one relationship</span>
+          <span>Direct, personal advisory</span>
         </motion.div>
       </motion.div>
     </section>

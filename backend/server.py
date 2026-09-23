@@ -12,6 +12,7 @@ from bson import ObjectId
 import os
 import uuid
 import json
+import asyncio
 import logging
 import bcrypt
 import jwt
@@ -251,15 +252,15 @@ async def refresh(request: Request, response: Response):
 
 # ---------------- Chatbot ----------------
 
-CHAT_SYSTEM = """You are the digital concierge of Satvik Capital — the personal financial advisory practice of Satvik Kattimani, based in India.
+CHAT_SYSTEM = """You are the digital concierge of Satvik Capital, a boutique capital advisory practice based in India.
 
-About Satvik: holds a Bachelor's degree in Investment Banking and interned at an asset management company (AMC) where he worked on the ideation and execution of mutual fund products. His edge: he understands how funds are built from the inside, so he selects and monitors them with an insider's eye. He personally handles every client — no call centres.
+About the advisor: holds a Bachelor's degree in Investment Banking and interned at an asset management company (AMC) working on the ideation and execution of mutual fund products. The edge: an insider's understanding of how funds are built, so schemes are selected and monitored with that lens. The advisor personally handles every client, with no call centres.
 
-Persona: warm, polished, discreet — like the front desk of a private wealth atelier. Keep answers concise (2-4 sentences). Refer to Satvik as a "financial advisor". Do NOT use the phrase "mutual fund distributor" unless a visitor explicitly asks about registration, in which case say Satvik is AMFI-registered (ARN-349743).
+Persona: warm, polished, discreet, like the front desk of a private wealth atelier. Keep answers concise (2 to 4 sentences). Refer to the practitioner only as "the advisor" or "your advisor", never by first name. Do NOT use the phrase "mutual fund distributor" unless a visitor explicitly asks about registration, in which case say the advisor is AMFI-registered (ARN-349743).
 
 What you do:
-- Answer educational questions about mutual funds: SIPs, lumpsum investing, ELSS & tax saving, debt vs equity funds, portfolio review/restructuring, KYC basics, goal-based investing, direct vs regular plans (regular plans include Satvik's ongoing guidance, rebalancing and behavioural coaching; direct plans have a lower expense ratio but you manage everything alone).
-- Explain Satvik Capital's services: SIP planning, portfolio review & restructuring, goal-based investing, tax-efficient investing, ongoing advisory.
+- Answer educational questions about mutual funds: SIPs, lumpsum investing, ELSS and tax saving, debt vs equity funds, portfolio review and restructuring, KYC basics, goal-based investing, and how AI/robo advisory, direct plans and guided regular plans differ (regular plans include the advisor's ongoing guidance, rebalancing and behavioural coaching; direct plans have a lower expense ratio but you manage everything alone; AI or robo tools are cheap but impersonal and cannot steady you through a market fall).
+- Explain the practice's services: SIP planning, portfolio review and restructuring, goal-based investing, tax-efficient investing, ongoing advisory.
 - Point visitors to the SIP calculator on this website and encourage them to book a FREE portfolio consultation via the "Book" section.
 
 Strict rules (SEBI/AMFI compliance):
@@ -267,8 +268,8 @@ Strict rules (SEBI/AMFI compliance):
 - NEVER promise or project guaranteed returns. If asked about returns, say they depend on market performance and goals, and suggest a consultation.
 - Always remind, where relevant, that mutual fund investments are subject to market risks.
 - For anything personal or advice-seeking ("which fund should I buy", "is my portfolio good"), politely say it needs a personalised review and invite them to book a free consultation.
-- For urgent human help, share: Phone 9740542188, Email satvikkinvestments@gmail.com.
-- If asked who you are, say you are the digital concierge of Satvik Capital, the financial advisory practice of Satvik Kattimani."""
+- For human help, invite them to book a consultation or email satvikkinvestments@gmail.com. Do NOT share any phone number.
+- If asked who you are, say you are the digital concierge of Satvik Capital, a capital advisory practice."""
 
 class ChatRequest(BaseModel):
     session_id: str
@@ -488,11 +489,234 @@ async def maybe_create_calendar_event(appt: dict):
         logger.error(f"google calendar event error: {e}")
         return None
 
+# ---------------- Clients & Portfolio (AMFI NAV) ----------------
+
+AMFI_NAV_URL = "https://www.amfiindia.com/spages/NAVAll.txt"
+_nav_cache: dict = {}
+_nav_list: list = []
+_nav_last_fetch: Optional[datetime] = None
+_nav_lock = asyncio.Lock()
+
+async def _refresh_nav():
+    global _nav_cache, _nav_list, _nav_last_fetch
+    async with httpx.AsyncClient(timeout=60, follow_redirects=True) as hc:
+        resp = await hc.get(AMFI_NAV_URL, headers={"User-Agent": "Mozilla/5.0"})
+        resp.raise_for_status()
+        text = resp.text
+    cache, lst = {}, []
+    for line in text.splitlines():
+        parts = line.split(";")
+        if len(parts) < 6:
+            continue
+        code = parts[0].strip()
+        if not code.isdigit():
+            continue
+        nav_str, date = parts[-2].strip(), parts[-1].strip()
+        name = " - ".join(p.strip() for p in parts[3:-2] if p.strip())
+        try:
+            nav = float(nav_str)
+        except ValueError:
+            continue
+        cache[code] = {"name": name, "nav": nav, "date": date}
+        lst.append({"code": code, "name": name})
+    if cache:
+        _nav_cache, _nav_list, _nav_last_fetch = cache, lst, datetime.now(timezone.utc)
+        logger.info(f"NAV refreshed: {len(cache)} schemes")
+
+async def ensure_nav(force: bool = False):
+    async with _nav_lock:
+        stale = _nav_last_fetch is None or (datetime.now(timezone.utc) - _nav_last_fetch) > timedelta(hours=6)
+        if force or stale or not _nav_cache:
+            try:
+                await _refresh_nav()
+            except Exception as e:
+                logger.error(f"NAV refresh failed: {e}")
+
+def _parse_date(s: Optional[str]):
+    if not s:
+        return None
+    try:
+        return datetime.strptime(s, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+def _xnpv(rate, flows):
+    t0 = min(d for d, _ in flows)
+    return sum(a / (1 + rate) ** ((d - t0).days / 365.0) for d, a in flows)
+
+def compute_xirr(flows):
+    if len(flows) < 2:
+        return None
+    amounts = [a for _, a in flows]
+    if not (min(amounts) < 0 < max(amounts)):
+        return None
+    rate = 0.1
+    for _ in range(100):
+        try:
+            f = _xnpv(rate, flows)
+            t0 = min(d for d, _ in flows)
+            deriv = sum(-((d - t0).days / 365.0) * a / (1 + rate) ** (((d - t0).days / 365.0) + 1) for d, a in flows)
+            if abs(deriv) < 1e-9:
+                break
+            new = rate - f / deriv
+        except (ZeroDivisionError, OverflowError, ValueError):
+            return None
+        if new <= -0.9999:
+            new = -0.9999
+        if abs(new - rate) < 1e-7:
+            rate = new
+            break
+        rate = new
+    if rate != rate or abs(rate) > 100:
+        return None
+    return round(rate * 100, 2)
+
+def _value_holding(h: dict) -> dict:
+    info = _nav_cache.get(str(h.get("scheme_code", "")))
+    nav = info["nav"] if info else None
+    units = float(h.get("units") or 0)
+    invested = float(h.get("invested_amount") or 0)
+    current = round(units * nav, 2) if nav is not None else None
+    gain = round(current - invested, 2) if current is not None else None
+    ret = round((gain / invested) * 100, 2) if (gain is not None and invested > 0) else None
+    return {**h, "nav": nav, "nav_date": info["date"] if info else None, "current_value": current, "gain": gain, "return_pct": ret}
+
+def _summarize(holdings: list) -> dict:
+    valued = [_value_holding(h) for h in holdings]
+    invested = sum(float(h.get("invested_amount") or 0) for h in valued)
+    current = sum((h["current_value"] if h["current_value"] is not None else float(h.get("invested_amount") or 0)) for h in valued)
+    gain = current - invested
+    ret = round((gain / invested) * 100, 2) if invested > 0 else None
+    flows = []
+    for h in valued:
+        d = _parse_date(h.get("invested_date"))
+        if d and float(h.get("invested_amount") or 0) > 0:
+            flows.append((d, -float(h["invested_amount"])))
+    if flows:
+        flows.append((datetime.now(IST).date(), current))
+    xirr = compute_xirr(flows) if len(flows) >= 2 else None
+    alloc = {}
+    for h in valued:
+        cat = h.get("category") or "Other"
+        cv = h["current_value"] if h["current_value"] is not None else float(h.get("invested_amount") or 0)
+        alloc[cat] = round(alloc.get(cat, 0) + cv, 2)
+    allocation = [{"name": k, "value": v} for k, v in alloc.items()]
+    return {"invested": round(invested, 2), "current_value": round(current, 2), "gain": round(gain, 2), "return_pct": ret, "xirr": xirr, "allocation": allocation, "holdings": valued}
+
+class ClientCreate(BaseModel):
+    name: str
+    email: Optional[str] = ""
+    phone: Optional[str] = ""
+    pan: Optional[str] = ""
+    notes: Optional[str] = ""
+
+class HoldingCreate(BaseModel):
+    scheme_code: str
+    scheme_name: str
+    units: float
+    invested_amount: float
+    invested_date: Optional[str] = ""
+    category: Optional[str] = "Equity"
+    folio: Optional[str] = ""
+
+@api_router.get("/admin/clients")
+async def list_clients(user: dict = Depends(get_current_user)):
+    await ensure_nav()
+    clients = await db.clients.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    out = []
+    for c in clients:
+        holdings = await db.holdings.find({"client_id": c["id"]}, {"_id": 0}).to_list(300)
+        s = _summarize(holdings)
+        out.append({**c, "invested": s["invested"], "current_value": s["current_value"], "gain": s["gain"], "return_pct": s["return_pct"], "xirr": s["xirr"], "holdings_count": len(holdings)})
+    return {"clients": out, "nav_updated": _nav_last_fetch.isoformat() if _nav_last_fetch else None}
+
+@api_router.post("/admin/clients")
+async def create_client(body: ClientCreate, user: dict = Depends(get_current_user)):
+    if not body.name.strip():
+        raise HTTPException(status_code=400, detail="Client name is required")
+    doc = {"id": str(uuid.uuid4()), "name": body.name.strip(), "email": (body.email or "").strip(), "phone": (body.phone or "").strip(), "pan": (body.pan or "").strip().upper(), "notes": (body.notes or "").strip(), "created_at": datetime.now(timezone.utc)}
+    await db.clients.insert_one(doc)
+    doc.pop("_id", None)
+    doc["created_at"] = doc["created_at"].isoformat()
+    return doc
+
+@api_router.get("/admin/clients/{client_id}")
+async def get_client(client_id: str, user: dict = Depends(get_current_user)):
+    await ensure_nav()
+    c = await db.clients.find_one({"id": client_id}, {"_id": 0})
+    if not c:
+        raise HTTPException(status_code=404, detail="Client not found")
+    holdings = await db.holdings.find({"client_id": client_id}, {"_id": 0}).sort("created_at", 1).to_list(300)
+    s = _summarize(holdings)
+    return {"client": c, "summary": {k: s[k] for k in ("invested", "current_value", "gain", "return_pct", "xirr", "allocation")}, "holdings": s["holdings"], "nav_updated": _nav_last_fetch.isoformat() if _nav_last_fetch else None}
+
+@api_router.patch("/admin/clients/{client_id}")
+async def update_client(client_id: str, body: ClientCreate, user: dict = Depends(get_current_user)):
+    r = await db.clients.update_one({"id": client_id}, {"$set": {"name": body.name.strip(), "email": (body.email or "").strip(), "phone": (body.phone or "").strip(), "pan": (body.pan or "").strip().upper(), "notes": (body.notes or "").strip()}})
+    if r.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Client not found")
+    return {"id": client_id}
+
+@api_router.delete("/admin/clients/{client_id}")
+async def delete_client(client_id: str, user: dict = Depends(get_current_user)):
+    await db.holdings.delete_many({"client_id": client_id})
+    r = await db.clients.delete_one({"id": client_id})
+    if r.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Client not found")
+    return {"id": client_id, "deleted": True}
+
+@api_router.post("/admin/clients/{client_id}/holdings")
+async def add_holding(client_id: str, body: HoldingCreate, user: dict = Depends(get_current_user)):
+    c = await db.clients.find_one({"id": client_id})
+    if not c:
+        raise HTTPException(status_code=404, detail="Client not found")
+    if body.units <= 0 or body.invested_amount <= 0:
+        raise HTTPException(status_code=400, detail="Units and invested amount must be positive")
+    doc = {"id": str(uuid.uuid4()), "client_id": client_id, "scheme_code": str(body.scheme_code).strip(), "scheme_name": body.scheme_name.strip(), "units": float(body.units), "invested_amount": float(body.invested_amount), "invested_date": (body.invested_date or "").strip(), "category": (body.category or "Equity").strip(), "folio": (body.folio or "").strip(), "created_at": datetime.now(timezone.utc)}
+    await db.holdings.insert_one(doc)
+    doc.pop("_id", None)
+    doc["created_at"] = doc["created_at"].isoformat()
+    return _value_holding(doc)
+
+@api_router.patch("/admin/holdings/{holding_id}")
+async def update_holding(holding_id: str, body: HoldingCreate, user: dict = Depends(get_current_user)):
+    r = await db.holdings.update_one({"id": holding_id}, {"$set": {"scheme_code": str(body.scheme_code).strip(), "scheme_name": body.scheme_name.strip(), "units": float(body.units), "invested_amount": float(body.invested_amount), "invested_date": (body.invested_date or "").strip(), "category": (body.category or "Equity").strip(), "folio": (body.folio or "").strip()}})
+    if r.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Holding not found")
+    return {"id": holding_id}
+
+@api_router.delete("/admin/holdings/{holding_id}")
+async def delete_holding(holding_id: str, user: dict = Depends(get_current_user)):
+    r = await db.holdings.delete_one({"id": holding_id})
+    if r.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Holding not found")
+    return {"id": holding_id, "deleted": True}
+
+@api_router.get("/admin/funds/search")
+async def fund_search(q: str = Query(...), user: dict = Depends(get_current_user)):
+    await ensure_nav()
+    ql = q.strip().lower()
+    if len(ql) < 3:
+        return {"results": []}
+    res = []
+    for item in _nav_list:
+        if ql in item["name"].lower():
+            info = _nav_cache.get(item["code"], {})
+            res.append({"code": item["code"], "name": item["name"], "nav": info.get("nav"), "date": info.get("date")})
+            if len(res) >= 25:
+                break
+    return {"results": res}
+
+@api_router.post("/admin/nav/refresh")
+async def nav_refresh(user: dict = Depends(get_current_user)):
+    await ensure_nav(force=True)
+    return {"nav_updated": _nav_last_fetch.isoformat() if _nav_last_fetch else None, "count": len(_nav_cache)}
+
 # ---------------- Core ----------------
 
 @api_router.get("/")
 async def root():
-    return {"message": "Satvik Capital — Financial Advisory API"}
+    return {"message": "Satvik Capital API"}
 
 app.include_router(api_router)
 
@@ -522,6 +746,7 @@ async def startup():
     elif not verify_password(admin_password, existing["password_hash"]):
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
         logger.info("admin password updated")
+    asyncio.create_task(ensure_nav())
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
