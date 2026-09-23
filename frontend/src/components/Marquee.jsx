@@ -1,6 +1,6 @@
 const ITEMS = [
   "No automated queues",
-  "A direct line, earned on booking",
+  "A direct line",
   "Trained inside an asset management house",
   "Disciplined asset allocation",
   "Portfolio restructuring",

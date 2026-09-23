@@ -60,7 +60,7 @@ export const About = () => (
           <p className="text-white/65 text-base sm:text-lg leading-relaxed mt-5 font-light">
             That vantage point is the edge. A portfolio review here is not a read of a star
             rating, it is a read of the fund the way the people who built it do. Satvik Capital
-            exists so a select circle of families and professionals can borrow that lens.
+            exists so families and professionals can borrow that lens.
           </p>
         </motion.div>
 
