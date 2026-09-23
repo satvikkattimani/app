@@ -166,8 +166,7 @@
     }
   ],
   "image_assets": {
-    "founder_portrait": "https://images.pexels.com/photos/36879437/pexels-photo-36879437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-    "advisory_meeting": "https://images.pexels.com/photos/8068654/pexels-photo-8068654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "advisory_meeting": "https://images.pexels.com/photos/8068654/pexels-photo-8068654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     "heritage_door_brass": "https://images.unsplash.com/photo-1524228529766-4d7fe5dc55ca?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBoZXJpdGFnZSUyMGFyY2hpdGVjdHVyZSUyMHRleHR1cmV8ZW58MHx8fHwxNzg5NzMxNzI5fDA&ixlib=rb-4.1.0&q=85",
     "jaipur_archway": "https://images.unsplash.com/photo-1596901224267-67ca38199090?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwyfHxpbmRpYW4lMjBoZXJpdGFnZSUyMGFyY2hpdGVjdHVyZSUyMHRleHR1cmV8ZW58MHx8fHwxNzg5NzMxNzI5fDA&ixlib=rb-4.1.0&q=85",
     "parchment_texture": "https://images.unsplash.com/photo-1629968417850-3505f5180761?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHx2aW50YWdlJTIwcGFyY2htZW50JTIwaGFuZG1hZGUlMjBwYXBlciUyMHRleHR1cmV8ZW58MHx8fHwxNzg5NzMxNzQwfDA&ixlib=rb-4.1.0&q=85"
